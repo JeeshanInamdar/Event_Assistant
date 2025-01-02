@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Create Event</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            <label for="event_name">Event Name:</label>
+            {{ form.event_name(size=32) }}
+        </div>
+        <div>
+            <label for="event_date">Event Date:</label>
+            {{ form.event_date() }}  <!-- This should render the DateField properly -->
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+
+</div>
+{% endblock %}

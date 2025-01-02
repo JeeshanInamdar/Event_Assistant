@@ -1,0 +1,107 @@
+{% extends 'participants_base.html' %}
+
+{% block content %}
+    <h1>Welcome, {{ user_email }}</h1>
+
+    <!-- Event List -->
+    <h2>Enrolled Events</h2>
+
+    <div class="events-container">
+        {% for event in events %}
+            <div class="event-card" id="event-{{ event.id }}">
+                <h3 class="event-title">{{ event.event_name }}</h3>
+                <p class="event-date"><strong>Date:</strong> {{ event.event_date }}</p>
+                <p class="event-status"><strong>Status:</strong> {{ event.event_status }}</p>
+                <div class="event-actions">
+                    <a href="{{ url_for('participant_event_details', event_id=event.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        {% else %}
+            <p>Not Enrolled in any Events.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const eventCards = document.querySelectorAll(".event-card");
+
+        eventCards.forEach(card => {
+            // Mouse enter event to start the hover effect
+            card.addEventListener("mouseenter", function() {
+                card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease"; // Smooth transition
+                card.style.transform = "translateY(-15px)";  // Lift the card
+                card.style.boxShadow = "0 10px 20px rgba(0, 0, 0, 0.3)";  // Increase shadow
+            });
+
+            // Mouse leave event to reset the hover effect
+            card.addEventListener("mouseleave", function() {
+                card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease"; // Smooth transition
+                card.style.transform = "translateY(0px)";  // Reset the card position
+                card.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";  // Reset shadow
+            });
+        });
+    });
+</script>
+
+<style>
+    .events-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .event-card {
+        background-color: #e0e0e0; /* Light gray background */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Initial shadow */
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Ensure transition is applied initially */
+    }
+
+    .event-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .event-date,
+    .event-status {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        color: #555;
+    }
+
+    .event-actions {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .btn {
+        text-decoration: none;
+        display: inline-block;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3; /* Darken button color on hover */
+    }
+
+    @media (max-width: 768px) {
+        .event-card {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    }
+</style>

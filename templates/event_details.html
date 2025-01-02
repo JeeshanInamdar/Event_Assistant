@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="event-details-container">
+        <h2>Event Details</h2>
+        
+        <div class="event-details">
+            <h3>{{ event['event_name'] }}</h3>
+            <p><strong>Date:</strong> {{ event['event_date'] }}</p>
+            <p><strong>Status:</strong> {{ event['event_status'] }}</p>
+            <!-- You can add more details about the event if needed -->
+        </div>
+        
+        <div class="event-actions">
+            <a href="{{ url_for('face_scanner') }}" class="btn btn-primary">Start</a>
+            <a href="{{ url_for('remove_event', event_id=event['id']) }}" class="btn btn-danger">Remove</a>
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+{% endblock %}
+
+<style>
+    .event-details-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-details h3 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .event-details p {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .event-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .btn {
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>

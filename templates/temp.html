@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 style="text-align:center;">Welcome to the Face Detection App</h1>
+
+<!-- Video feed container -->
+<div id="video-container" style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+    <!-- Laptop video stream -->
+    <img id="laptop-video-feed" src="" alt="Laptop Video Stream" style="border: 2px solid black; max-width: 100%; height: auto; display: none;">
+
+    <!-- Mobile video stream -->
+    <video id="mobile-video-feed" autoplay playsinline style="border: 2px solid black; max-width: 100%; height: auto; display: none;"></video>
+</div>
+
+<!-- Buttons for controlling the video feed -->
+<div style="text-align: center; margin-top: 20px;">
+    <button id="laptop-scan" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Laptop Camera</button>
+    <button id="mobile-scan" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Mobile Camera</button>
+    <button id="stop-scan" style="padding: 10px 20px; font-size: 16px; cursor: pointer;" disabled>Stop</button>
+</div>
+
+<script>
+    const laptopScanButton = document.getElementById('laptop-scan');
+    const mobileScanButton = document.getElementById('mobile-scan');
+    const stopButton = document.getElementById('stop-scan');
+    const laptopVideoFeed = document.getElementById('laptop-video-feed');
+    const mobileVideoFeed = document.getElementById('mobile-video-feed');
+    const videoContainer = document.getElementById('video-container');
+
+    // Laptop Camera: Fetch video feed from Flask
+    laptopScanButton.addEventListener('click', () => {
+        laptopVideoFeed.src = "{{ url_for('video') }}"; // Flask endpoint
+        laptopVideoFeed.style.display = "block"; // Show laptop video
+        mobileVideoFeed.style.display = "none"; // Hide mobile video
+
+        stopButton.disabled = false; // Enable the "Stop" button
+        laptopScanButton.disabled = true; // Disable "Laptop Camera" button
+        mobileScanButton.disabled = false; // Enable "Mobile Camera" button
+    });
+
+    // Mobile Camera: Use browser's getUserMedia API
+    mobileScanButton.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mobileVideoFeed.srcObject = stream; // Stream mobile camera
+            mobileVideoFeed.style.display = "block"; // Show mobile video
+            laptopVideoFeed.style.display = "none"; // Hide laptop video
+
+            stopButton.dataset.streamId = stream.id; // Save stream ID to stop later
+        } catch (err) {
+            alert('Error accessing mobile camera: ' + err.message);
+        }
+
+        stopButton.disabled = false; // Enable the "Stop" button
+        laptopScanButton.disabled = false; // Enable "Laptop Camera" button
+        mobileScanButton.disabled = true; // Disable "Mobile Camera" button
+    });
+
+    // Stop Camera: Clear both laptop and mobile feeds
+    stopButton.addEventListener('click', () => {
+        laptopVideoFeed.src = ""; // Stop laptop video
+        laptopVideoFeed.style.display = "none"; // Hide laptop video
+
+        const mobileStreamId = stopButton.dataset.streamId;
+        if (mobileStreamId) {
+            const tracks = mobileVideoFeed.srcObject?.getTracks();
+            tracks?.forEach(track => track.stop()); // Stop mobile camera stream
+            mobileVideoFeed.srcObject = null; // Clear mobile video
+            mobileVideoFeed.style.display = "none"; // Hide mobile video
+        }
+
+        stopButton.disabled = true; // Disable the "Stop" button
+        laptopScanButton.disabled = false; // Enable "Laptop Camera" button
+        mobileScanButton.disabled = false; // Enable "Mobile Camera" button
+    });
+</script>
+{% endblock %}
