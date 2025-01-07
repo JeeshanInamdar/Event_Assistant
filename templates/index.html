@@ -1,284 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Management System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7fc;
-            color: #333;
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Event Assistant</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+  </head>
+  <body>
+    <main>
+      <div class="big-wrapper light">
+        <img src="./static/images/shape.png" alt="" class="shape" />
 
-        h1, h2, h3 {
-            margin: 0;
-            padding: 0;
-        }
+        <header>
+          <div class="container">
+            <div class="logo">
+              <img src="./static/images/logo.png" alt="Event Assistant Logo" />
+              <h3>Event Assistant</h3>
+            </div>
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* Header Section */
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline-block;
-            margin: 0 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            font-size: 18px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            color: #ff6600;
-        }
-
-        /* Hero Section */
-        #hero {
-            background: url('background.jpg') no-repeat center center/cover;
-            color: black;
-            padding: 80px 0;
-            text-align: center;
-            background-size: cover;
-        }
-
-        #hero h2 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        #hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-        }
-
-        #hero a {
-            background-color: #ff6600;
-            padding: 12px 30px;
-            font-size: 1.2rem;
-            color: black;
-            border-radius: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-        }
-
-        #hero a:hover {
-            background-color: #e55c00;
-        }
-
-        /* Participant and Event Lead Buttons Section */
-        #login-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .login-btn {
-            padding: 15px 30px;
-            background-color: #333;
-            color: white;
-            font-size: 1.2rem;
-            border-radius: 30px;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .login-btn:hover {
-            background-color: #ff6600;
-        }
-
-        /* Features Section */
-        #features {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            padding: 60px 20px;
-            background-color: #fff;
-        }
-
-        #features div {
-            width: 30%;
-            text-align: center;
-            background-color: #f8f8f8;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        #features div:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        #features h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-        }
-
-        /* Team Section */
-        #team {
-            background-color: #f1f3f5;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        #team h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        .team-member {
-            display: inline-block;
-            margin: 20px;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .team-member img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-        }
-
-        .team-member:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .team-member p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            color: #333;
-        }
-
-        /* Footer Section */
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: white;
-        }
-
-        footer p {
-            font-size: 1rem;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            #features {
-                flex-direction: column;
-            }
-
-            #features div {
-                width: 80%;
-                margin-bottom: 20px;
-            }
-
-            #hero h2 {
-                font-size: 2.5rem;
-            }
-
-            #hero p {
-                font-size: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <header>
-        <h1>Event Attendance Management System</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
+            <nav class="links">
+              <ul>
+                <li><a href="#team">About us</a></li>
                 <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+                <li><a href="{{ url_for('head_auth') }}">Event Head</a></li>
+                <li><a href="{{ url_for('participant_auth') }}">Participant</a></li>
+                <li>
+                  <div class="bottom-area">
+                    <div class="container">
+                      <button class="toggle-btn" aria-label="Toggle Dark Mode">
+                        <i class="far fa-moon"></i>
+                        <i class="far fa-sun"></i>
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </nav>
 
-    <!-- Hero Section -->
-    <section id="hero">
-        <h2>Welcome to the Future of Event Attendance!</h2>
-        <p>Take attendance using facial recognition and get a detailed report instantly.</p>
-    </section>
+            <div class="overlay"></div>
 
-    <!-- Login Buttons Section -->
-    <section id="login-buttons">
-        <a href="{{ url_for('participant_login') }}" class="login-btn">Participant Login/Signup</a>
-        <a href="{{ url_for('login') }}" class="login-btn">Event Lead Login/Signup</a>
-    </section>
+            <div class="hamburger-menu" aria-label="Toggle Menu">
+              <div class="bar"></div>
+            </div>
+          </div>
+        </header>
 
-    <!-- Features Section -->
-    <section id="features">
-        <div>
-            <h3>Secure Login</h3>
-            <p>Only authorized users can log in to manage events and take attendance.</p>
-        </div>
-        <div>
-            <h3>Facial Detection Attendance</h3>
-            <p>Take attendance automatically using facial recognition technology.</p>
-        </div>
-        <div>
-            <h3>Email-based Reports</h3>
-            <p>Get an instant attendance report emailed to you after the event.</p>
-        </div>
-    </section>
+        <section class="showcase-area">
+          <div class="container">
+            <div class="left">
+              <div class="big-title">
+                <h1>Revolutionizing Event Attendance</h1>
+                <h2>Seamlessly Manage Your College Events.</h2>
+              </div>
+              <p class="text">
+                Our Event Assistance System is designed to transform how college events are organized and managed. From creating events to real-time attendance tracking with facial recognition, this system ensures that both organizers and participants have a smooth experience. Attendees can register, receive timely notifications, and be automatically marked present with facial recognition, all while event organizers can access real-time data and comprehensive reports. Start exploring and enhance the future of event management today!
+              </p>
+              <div class="cta">
+                <a href="#" class="btn">Get Started</a>
+              </div>
+            </div>
 
-    <!-- Team Section -->
-    <section id="team">
-        <h2>Meet the Team</h2>
-        <div class="team-member">
-            <img src="static/Jeeshan.png" alt="Team Member 1">
-            <p>Jeeshan - Developer</p>
-        </div>
-        <div class="team-member">
-            <img src="static/Pranav.png" alt="Team Member 2">
-            <p>Anuj - Designer</p>
-        </div>
-        <div class="team-member">
-            <img src="static/Shubham.png" alt="Team Member 3">
-            <p>Ashin - Project Manager</p>
-        </div>
-        <div class="team-member">
-            <img src="static/Pranav.png" alt="Team Member 4">
-            <p>Bansidhar - Project Manager</p>
-        </div>
-    </section>
+            <div class="right">
+              <img src="./static/images/person.png" alt="Person using the system" class="person" />
+            </div>
+          </div>
+        </section>
 
-    <!-- Footer Section -->
-    <footer>
-        <p>&copy; 2025 Event Attendance Management System | All Rights Reserved</p>
-    </footer>
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+          <div class="container container-features">
+            <h1 class="features-title">
+              Event Assistant System
+              <br class="hidden sm:block">
+            </h1>
+            <div class="features-grid">
+              <!-- Feature Item 1: Event Creation and Management -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M20 5v14l-5-5H5V5h15z"></path>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Event Creation and Management</h2>
+                  <p class="feature-text">
+                    Easily create and manage events, including specifying details like event name, description, date, time, and location.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
 
-</body>
+              <!-- Feature Item 2: Participant Registration -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M12 7v7M7 12h7"></path>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Participant Registration</h2>
+                  <p class="feature-text">
+                    Participants can easily register for events, with email confirmations sent and registration details accessible at any time.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
+
+              <!-- Feature Item 3: Facial Recognition for Attendance -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Facial Recognition for Attendance</h2>
+                  <p class="feature-text">
+                    Use facial recognition to mark attendance automatically, ensuring that only registered participants are marked as present.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
+
+              <!-- Feature Item 4: Event Notifications -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M14 2L12 4m0 0l-2-2M12 4v16M2 12l2-2m0 0l2 2M4 10h16m-8 0v12"></path>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Event Notifications</h2>
+                  <p class="feature-text">
+                    Participants receive reminders and alerts about event dates, times, and locations, ensuring they never miss an event.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
+
+              <!-- Feature Item 5: Attendance Reports -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Attendance Reports</h2>
+                  <p class="feature-text">
+                    Organizers can download detailed attendance reports after the event, making it easy to track participation and follow up with absentees.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
+
+              <!-- Feature Item 6: Real-time Event Updates -->
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="icon" viewBox="0 0 24 24">
+                    <path d="M14 3h7v7m0 0l-7-7m7 7L10 17h7v-7"></path>
+                  </svg>
+                </div>
+                <div class="feature-content">
+                  <h2 class="feature-title">Real-time Event Updates</h2>
+                  <p class="feature-text">
+                    Event organizers can provide real-time updates about event changes, announcements, and alerts to participants through the system.
+                  </p>
+                  <a class="feature-link" href="#">Learn More</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team">
+          <div class="team-section">
+            <div class="container-team">
+              <h1 class="team-title">Our Team</h1>
+              <p class="team-bio">
+                Our team is a dynamic group of professionals, each with unique expertise. We work collaboratively to drive innovation and deliver exceptional results.
+              </p>
+              <div class="team-grid">
+                <!-- Team Member 1 -->
+                <div class="team-member">
+                  <div class="team-photo">
+                    <img src="./static/team/Jeeshan.png" alt="team member">
+                  </div>
+                  <h2 class="team-name">Jeeshan Inamdar</h2>
+                  <p class="team-role">Chief Developer</p>
+                  <div class="team-bio" id="bio1" style="display: none;">
+                    <!-- Bio content goes here -->
+                    Jeeshan Inamdar is a passionate developer with experience in frontend and backend technologies.
+                  </div>
+                  <div class="team-social-links">
+                    <a href="https://www.instagram.com/jeeshan.inamdar" class="team-social-link" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.github.com/JeeshanInamdar" class="team-social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/jeeshan-inamdar-34599629a" class="team-social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                  </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="team-member">
+                  <div class="team-photo" onclick="toggleBio('bio2')">
+                    <img src="./static/team/anuj.png" alt="team member">
+                  </div>
+                  <h2 class="team-name">Anuj Bagewadi</h2>
+                  <p class="team-role">Head Designer</p>
+                  <div class="team-bio" id="bio2" style="display: none;">
+                    Anuj is a creative Designer responsible for shaping the visual direction of our projects. His design philosophy revolves around simplicity and functionality, ensuring that every design element aligns with the overall user experience.
+                  </div>
+                  <div class="team-social-links">
+                    <a href="#" class="team-social-link" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                  </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="team-member">
+                  <div class="team-photo" onclick="toggleBio('bio3')">
+                    <img src="./static/team/ashin.png" alt="team member">
+                  </div>
+                  <h2 class="team-name">Ashin Shyju</h2>
+                  <p class="team-role">Project Manager</p>
+                  <div class="team-bio" id="bio3" style="display: none;">
+                    Ashin is the Project Manager, overseeing the planning, execution, and delivery of every project phase. His ability to manage teams and timelines ensures that each project is delivered successfully.
+                  </div>
+                  <div class="team-social-links">
+                    <a href="#" class="team-social-link" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                  </div>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div class="team-member">
+                  <div class="team-photo" onclick="toggleBio('bio4')">
+                    <img src="./static/team/bansi.png" alt="team member">
+                  </div>
+                  <h2 class="team-name">Bansidhar Patil</h2>
+                  <p class="team-role">VP Marketing</p>
+                  <div class="team-bio" id="bio4" style="display: none;">
+                    Bansidhar focuses on marketing strategies and expanding brand presence. His understanding of market trends and consumer behavior helps drive growth and client engagement.
+                  </div>
+                  <div class="team-social-links">
+                    <a href="#" class="team-social-link" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" class="team-social-link" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Footer Section -->
+        <section id="footer">
+          <footer class="text-gray-600 body-font">
+            <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+              <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
+                <img src="static/images/footer.png" alt="Footer Logo" class="w-20 h-20 p-2 bg-indigo-500 rounded-full">
+                <span class="ml-3 text-xl">Team</span>
+              </a>
+
+              <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2025 Team —
+                <a href="https://twitter.com/knyttneve" class="text-gray-600 ml-1" rel="noopener noreferrer" target="_blank">@knyttneve</a>
+              </p>
+              <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+                <a class="text-gray-500">
+                  <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                  </svg>
+                </a>
+                <a class="ml-3 text-gray-500">
+                  <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+                  </svg>
+                </a>
+                <a class="ml-3 text-gray-500">
+                  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                  </svg>
+                </a>
+                <a class="ml-3 text-gray-500">
+                  <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+                    <path stroke="none" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+                    <circle cx="4" cy="4" r="2" stroke="none"></circle>
+                  </svg>
+                </a>
+              </span>
+            </div>
+          </footer>
+        </section>
+      </div>
+    </main>
+    <!-- Main end -->
+    <!-- JavaScript Files -->
+
+    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <script src="./static/script/app.js"></script>
+  </body>
 </html>

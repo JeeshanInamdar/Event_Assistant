@@ -1,10 +1,11 @@
-from flask import Flask,render_template, redirect, url_for, session, flash, Response
+from flask import Flask,render_template, redirect, url_for, session, flash, Response,request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField,DateField
 from wtforms.validators import DataRequired, Email, ValidationError
 import bcrypt
 from camera import Video
 import pymysql
+import os
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Jeeshan@87867'
 app.config['MYSQL_DB'] = 'mini'
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.urandom(24)
 
 def get_db_connection():
     return pymysql.connect(
@@ -117,52 +118,107 @@ def participant_register():
 
     return render_template('participant_register.html', form=form)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
+@app.route('/head_auth',methods=['GET','POST'])
+def head_auth():
+    login_form = LoginForm(request.form)
+    register_form = RegisterForm(request.form)
 
-        connection = get_db_connection()
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
-            user = cursor.fetchone()
-        connection.close()
+    if request.method == 'POST':
+        if 'signin' in request.form and login_form.validate_on_submit():
+            email = login_form.email.data
+            password = login_form.password.data
 
-        if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
-            session['user_id'] = user['id']
-            return redirect(url_for('dashboard'))
+            connection = get_db_connection()
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM users WHERE email=%s", (email,))
+                user = cursor.fetchone()
+            connection.close()
+
+            if  user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
+                session['user_id'] = user['id']
+                return redirect(url_for('dashboard'))
+            else:
+                flash("Login failed. Please check your email and password.", 'danger')
+
+        # Check if signup form was submitted
+        elif 'signup' in request.form and register_form.validate_on_submit():
+            name = register_form.name.data
+            email = register_form.email.data
+            password = register_form.password.data
+
+            print(email)
+
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+            connection = get_db_connection()
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)",
+                                   (name, email, hashed_password))
+                    connection.commit()
+                flash("Account created successfully. Please log in.", 'success')
+                return redirect(url_for('head_auth'))
+            except Exception as e:
+                flash(f"An error occurred: {e}. Please try again later.", 'danger')
+            finally:
+                connection.close()
+
         else:
-            flash("Login failed. Please check your email and password")
-            return redirect(url_for('login'))
+            flash("Invalid form input.", 'danger')
 
-    return render_template('login.html', form=form)
+    return render_template('head_auth.html', login_form=login_form, register_form=register_form)
 
 
-@app.route('/participant_login', methods=['GET', 'POST'])
-def participant_login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
+@app.route('/participant_auth', methods=['GET', 'POST'])
+def participant_auth():
+    login_form = LoginForm(request.form)
+    register_form = RegisterForm_parti(request.form)
 
-        connection = get_db_connection()
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM participants WHERE email=%s", (email,))
-            participant = cursor.fetchone()
-        connection.close()
+    if request.method == 'POST':
+        if 'signin' in request.form:
+            print('yes')
+        if 'signin' in request.form and login_form.validate_on_submit():
+            email = login_form.email.data
+            password = login_form.password.data
 
-        if participant and bcrypt.checkpw(password.encode('utf-8'), participant['password'].encode('utf-8')):
-            session['participant_id'] = participant['id']
-            return redirect(url_for('participant_dashboard'))
+            connection = get_db_connection()
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM participants WHERE email=%s", (email,))
+                participant = cursor.fetchone()
+            connection.close()
+
+            if participant and bcrypt.checkpw(password.encode('utf-8'), participant['password'].encode('utf-8')):
+                session['participant_id'] = participant['id']
+                return redirect(url_for('participant_dashboard'))
+            else:
+                flash("Login failed. Please check your email and password.", 'danger')
+
+        # Check if signup form was submitted
+        elif 'signup' in request.form and register_form.validate_on_submit():
+            email = register_form.email.data
+            usn = register_form.usn.data
+            name = register_form.name.data
+            password = register_form.password.data
+
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+            connection = get_db_connection()
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("INSERT INTO participants (name,usn, email, password) VALUES (%s,%s, %s, %s)",
+                                   (name,usn, email, hashed_password))
+                    connection.commit()
+                flash("Account created successfully. Please log in.", 'success')
+                return redirect(url_for('participant_auth'))
+            except Exception as e:
+                flash(f"An error occurred: {e}. Please try again later.", 'danger')
+            finally:
+                connection.close()
+
         else:
-            flash("Login failed. Please check your email and password")
-            return redirect(url_for('participant_login'))
+            flash("Invalid form input.", 'danger')
 
-    return render_template('participant_login.html', form=form)
-
-
+    return render_template('participant_auth.html', login_form=login_form, register_form=register_form)
 
 @app.route('/dashboard')
 def dashboard():
@@ -188,44 +244,46 @@ def dashboard():
         if user:
             return render_template('dashboard.html', user_email=user['email'], events=events)
 
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 
 @app.route('/participant_dashboard')
 def participant_dashboard():
-    if 'participant_id' in session:  # Ensure participant is logged in
-        participant_id = session['participant_id']
+    if 'participant_id' not in session:  # Ensure participant is logged in
+        return redirect(url_for('participant_auth'))  # Proper redirect to login page
 
-        # Connect to the database
-        connection = get_db_connection()
-        with connection.cursor() as cursor:
+    participant_id = session['participant_id']  # Get participant_id from session
 
-            # Fetch participant details
-            cursor.execute("SELECT * FROM participants WHERE id=%s", (participant_id,))
-            user = cursor.fetchone()
+    # Connect to the database
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
 
-            # Fetch event details for the participant
-            cursor.execute("""
-                SELECT e.id, e.event_name, e.event_date
-                FROM participations p
-                JOIN events e ON p.event_id = e.id
-                WHERE p.participant_id = %s
-                ORDER BY e.event_date DESC
-            """, (participant_id,))
-            events = cursor.fetchall()
+        # Fetch participant details
+        cursor.execute("SELECT * FROM participants WHERE id=%s", (participant_id,))
+        user = cursor.fetchone()
 
-        connection.close()
+        # Fetch event details for the participant
+        cursor.execute("""
+            SELECT e.id, e.event_name, e.event_date
+            FROM participations p
+            JOIN events e ON p.event_id = e.id
+            WHERE p.participant_id = %s
+            ORDER BY e.event_date DESC
+        """, (participant_id,))
+        events = cursor.fetchall()
 
-        if user:  # If the participant exists in the database
-            # Render the dashboard with event details
-            return render_template(
-                'participant_dashboard.html',
-                user_email=user['email'],
-                events=events
-            )
+    connection.close()
 
-    # Redirect to login if session is missing or participant not found
-    return redirect(url_for('participant_login'))
+    if user:  # If the participant exists in the database
+        # Render the dashboard with event details
+        return render_template(
+            'participant_dashboard.html',
+            user_email=user['email'],
+            events=events
+        )
+
+    # Redirect to login if participant not found
+    return redirect(url_for('participant_auth'))
 
 
 @app.route('/create_event', methods=['GET', 'POST'])
@@ -438,17 +496,15 @@ def register_event(event_id):
     # Redirect to login if session is missing
     return redirect(url_for('participant_login'))
 
-
-
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 @app.route('/participant_logout')
 def participant_logout():
-    session.pop('user_id', None)
-    return redirect(url_for('participant_login'))
+    session.pop('participant_id', None)
+    return redirect(url_for('index'))
 
 def gen(camera):
     # Generate frames from the webcam
@@ -472,5 +528,5 @@ def face_scanner():
 
 if __name__ == '__main__':
     # Run the Flask app
-    app.run(host='192.168.246.125',port=5000,debug=True)
+    app.run(debug=True)
 #ip 192.168.1.109
